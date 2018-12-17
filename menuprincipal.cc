@@ -1161,9 +1161,7 @@ int main(int argc, char const *argv[]) {
 							//miBD.guardarBackup();
 			
 							if (opcionSalir==1){
-								cout<<"hola";
-
-								//if(dniLista.compare(dniAlumno)==0){
+								
 								if(strcmp(cprof.rol,"coordinador")==0){
 									miBD.guardarBD();
 									miBD.guardarBackup();
@@ -1211,7 +1209,7 @@ int main(int argc, char const *argv[]) {
 									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<"Hasta luego "<<endl;
 									saltoLinea();
 									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.nombreCompleto;
-									//cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.rol;
+									
 									saltoLinea();
 									saltoLinea();
 

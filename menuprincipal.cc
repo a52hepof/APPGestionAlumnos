@@ -1165,6 +1165,7 @@ int main(int argc, char const *argv[]) {
 
 								//if(dniLista.compare(dniAlumno)==0){
 								if(strcmp(cprof.rol,"coordinador")==0){
+									miBD.guardarBD();
 									miBD.guardarBackup();
 									saltoLinea();
 									saltoLinea();

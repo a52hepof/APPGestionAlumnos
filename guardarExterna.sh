@@ -3,8 +3,7 @@
 #chmod +x guardarExterna.sh
 
 git status;
-
-
+git pull origin master
 git add gestionAlumnos.bin;
 
 clear;

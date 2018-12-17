@@ -2,29 +2,9 @@
 // MENU PRINCIPAL
 // --------------
 
-//g++ menuprincipal.cc Alumno.cc cargarBD.cc introducirAlumno.cc mostrarLista.cc buscarAlumno.cc guardarBD.cc Profesor.cc gestionLideres.cc BD.h Alumno.h Profesor.h guardarExterna.cc cargarExterna.cc guardarCredenciales.cc cargarCredenciales.cc modificarAlumno.cc
-
-////*****FERNANDO
-//Revisar todos los char que tengan el mismo tamaño
-//errores al ittroducir en un int un char
-//activar sleep acceso aplicación
-//**CU**cargar base de datos. Si hay alumnos dados de alta, pedir confirmación porque se borrarán los datos que haya actualmente
-//**CU** al cargar copia de seguridad hay que indicar los alumnos cargados en el sistema
-//Configurar aplicación para que funcionen las copias de seguridad externas en cualquier equipo Añadir en scrip git init git remote add origin <repositorio git> user name, email, git set-url
-//**CU** El sistema debe mostrar en blanco los datos del alumno no obligatorios que no hayan sido introducidos previamente.// no sé como se podría hacer. NO ME PREOCUPA
-//Aspecto menús
+//g++ menuprincipal.cc BD.cc Alumno.cc Profesor.cc Profesor.h Alumno.h BD.h consoleLinux.h
 
 
-////*****CHARLII
-//al introducir  alumno, que busque por apellidos y dni sin preguntar
-//**CU** cuando se da de alta un alumno devuelve el número de alumnos el sistema
-//**CU**cuando se introduce un alumno hay que indicar que ha sido correcto y mostrar su nombre y dni 
-//**CU** En caso de devolver los alumnos del grupo, el sistema indicará si el grupo tiene líder o no lo tiene.// no sé si se puede hacer ahora. NO ME PREOCUPA
-//en modificar alumnos cuando se introduce mal el código de si se desea modificar se vuelve inestable. Hacer esta comprobación en todas las peticiones de datos
-
-////*****RAFA
-//Interfaz Salir aplicación
-//Interfaz Eliminar Alumnos
 
 
 
@@ -54,6 +34,9 @@ int opcOrden=0;
 string orden="AAA";//para orden ascendente o descendente ASC, DESC
 BD miBD; //crea un objeto de base de datos con el nombre de fichero gestionAlumnos
 int contadorBackUp=0;//para controlar si se han introducido nuevos alumnos. sE DECLARA GLOBAL PARA QUE ESTÉ SIEMPRE DISPONIBLE
+Credencialesprofesor cprof;
+
+
 #define INTENTOS_ACCESO_APLICACION 3
 
 
@@ -76,17 +59,16 @@ void generarhtml();
 int main(int argc, char const *argv[]) {
 
 	limpiarPantalla();
-	/*
+	
 	cout<<BLINK<<BOLD_ON<<"ACCEDIENDO A LA APLICACIÓN"<<RESET<<endl;
 	
 	//sleep(1);
 	saltoLinea();
 	cout<<"Se abrirá la carpeta donde se encuentran las instrucciones para acceder a la aplicación. "<<endl;
 	cout<<" Abra el archivo acceso.html y vuelve a la terminal para acceder a la Aplicación "<<endl;
-	//sleep(3);
+	sleep(3);
 	generarhtml();
-	*/
-	
+		
 	Profesor p;//para acceso a la aplicación.
 	p.credencialesBin();// para guardar el fichero binario de las credenciales
 	int intentosAcceso=0;//para controlar el número de intentos de acceso
@@ -95,12 +77,6 @@ int main(int argc, char const *argv[]) {
 	char NombreFicheroBin[50];
 	string nameBD=bAcceso.getNombreFichero()+".bin";
 	strcpy(NombreFicheroBin, nameBD.c_str());
-
-
-	
-
-
-
 
 	//introducir datos acceso
 
@@ -124,7 +100,7 @@ int main(int argc, char const *argv[]) {
 
 			//comprobar credenciales
 
-			Credencialesprofesor cprof=p.registro(user, password);// para recoger datos del usuario que accede y poder controlar el menú que se carga
+			cprof=p.registro(user, password);// para recoger datos del usuario que accede y poder controlar el menú que se carga
 
 
 			if(strcmp(cprof.usuario, user.c_str())==0 && strcmp(cprof.contrasenya, password.c_str())==0){
@@ -146,6 +122,10 @@ int main(int argc, char const *argv[]) {
 					cout<<"\t"<<COLOR_GREEN<<"Existe una Base de datos almacenada"<<RESET;
 					cout<<BOLD_ON<<COLOR_DARKGREY"\t¿desea cargarla? (indique <1> o <0>: "<<COLOR_BRIGHTBLUE;cin>>OpccargarBD;
 					if (OpccargarBD==1){
+
+
+
+
 						if (miBD.cargarBD()){
 
 							cout<<COLOR_GREEN<<"Base de datos cargada correctamente"<<RESET<<endl;
@@ -746,19 +726,32 @@ int main(int argc, char const *argv[]) {
 							limpiarPantalla();
 
 							} break;
-						case 3: {	// ELIMINAR ALUMNO
+
+
+						case 3:{
+
+						
+							
+							string DNIEliminar;
+							cout<<"\t"<<BOLD_ON<<COLOR_DARKGREY<<"Indique el DNI del alumno que  desea eliminar: ";cout<<COLOR_BRIGHTBLUE<<RESET;cin>>DNIEliminar;getchar();
+							//cout<<DNIEliminar;
+							
+							cout<<miBD.getAlumnos().size()<<endl;;
+							if (miBD.eliminarAlumno(DNIEliminar)){
 								
+								cout<<"encontrado";
+						
+								
+							}
+							cout<<miBD.getAlumnos().size()<<endl;
+							saltoLinea();
+							cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();
+							
+							limpiarPantalla();
 
+					
+						}break;
 
-
-
-
-
-
-
-
-
-							} break;
 						case 4: {	// MOSTRAR ALUMNOS
 
 								
@@ -1031,36 +1024,75 @@ int main(int argc, char const *argv[]) {
 							
 						case 6: {	// CARGAR BD
 
-							if (miBD.cargarBD()){
+							
+							if(miBD.getAlumnos().size()>0){
+								int confirmarCarga=0;
+								cout<<COLOR_RED<<"Existen alumnos en la base de datos, si decide cargar la base de datos, se borrarán los existentes"<<RESET<<endl;
+								cout<<BOLD_ON<<"Pusle <1> para confirmar la carga de la base de datos: "<<RESET;cout<<COLOR_BLUE;cin>>confirmarCarga;
+								if(confirmarCarga==1){
+									if (miBD.cargarBD()){
 
-								cout<<COLOR_GREEN<<"Base de datos cargada correctamente"<<RESET<<endl;
-								cout<<"vuelva al menú para introducir alumnos"<<endl;
-								saltoLinea();
-								cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
-								limpiarPantalla();
-								break;
+										cout<<COLOR_GREEN<<"Base de datos cargada correctamente"<<RESET<<endl;
+										cout<<"vuelva al menú para introducir alumnos"<<endl;
+										saltoLinea();
+										cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
+										limpiarPantalla();
+										break;
+									}
+
+									else{
+										cout<<COLOR_RED<<"No se encuentra el fichero o se ha producido un error cargar la base de datos"<<RESET<<endl;
+										cout<<"compruebe que exista el fichero de copia de seguridad, en caso contrario,"<<endl;
+										cout<<"vuelva al menú para introducir alumnos y cree una copia de seguridad antes de cargarla"<<endl;
+										saltoLinea();
+										cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
+										limpiarPantalla();
+										break;
+									}
+
+								}
+								else{
+									break;
+								}
+
 							}
 
-							else{
-								cout<<COLOR_RED<<"No se encuentra el fichero o se ha producido un error cargar la base de datos"<<RESET<<endl;
-								cout<<"compruebe que exista el fichero de copia de seguridad, en caso contrario,"<<endl;
-								cout<<"vuelva al menú para introducir alumnos y cree una copia de seguridad antes de cargarla"<<endl;
-								saltoLinea();
-								cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
-								limpiarPantalla();
-								break;
+
+							if(miBD.getAlumnos().size()==0){
+								if (miBD.cargarBD()){
+
+									cout<<COLOR_GREEN<<"Base de datos cargada correctamente"<<RESET<<endl;
+									cout<<"Acceda ahora a la aplicación"<<endl;
+									saltoLinea();
+									limpiarPantalla();
+								}
+
+								else{
+									cout<<COLOR_RED<<"Se ha producido un error cargar la base de datos"<<RESET<<endl;
+									cout<<"compruebe que exista el fichero de copia de seguridad, en caso contrario,"<<endl;
+									cout<<"Consulte con el administrador del sistema"<<endl;
+									saltoLinea();
+									cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
+									limpiarPantalla();
+								}
 							}
 
 
+							
 
-							} break;
+
+
+
+
+
+						} break;
 						case 7: {	// GUARDAR BACKUP
 
 							if (strcmp(cprof.rol, "coordinador")==0){
 
-								if (miBD.getAlumnos().size()==contadorBackUp){
+								if (miBD.getAlumnos().size()==0){
 
-									cout<<COLOR_RED<<"ANTES DE GUARDAR LA COPIA DE SEGURIDAD EXTERNA INTRODUZCA NUEVOS ALUMNOS EN LA BASE DE DATOS"<<RESET<<endl;
+									cout<<COLOR_RED<<"ANTES DE GUARDAR LA COPIA DE SEGURIDAD EXTERNA  ALUMNOS EN LA BASE DE DATOS Y GUARDE LA COPIA DE SEGURIDAD"<<RESET<<endl;
 									saltoLinea();
 									cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();getchar();
 									limpiarPantalla();
@@ -1112,10 +1144,77 @@ int main(int argc, char const *argv[]) {
 
 							} break;
 						case 10: {	// SALIR DE LA APLICACION
-							cout<<"Hasta luego Lucas"<<endl;
+							limpiarPantalla();
+							saltoLinea();
+							saltoLinea();
+							cout.fill(' ');
+							int opcionSalir;
 							
-							exit(-1);
-							} break;
+							cout<<"Antes de salir, teclee <1> si desea ralizar copia de seguridad:" ;cin>>opcionSalir;getchar();
+							//miBD.guardarBD();
+							//miBD.guardarBackup();
+			
+							if (opcionSalir==1){
+								cout<<"hola";
+
+								//if(dniLista.compare(dniAlumno)==0){
+								if(strcmp(cprof.rol,"coordinador")==0){
+									miBD.guardarBackup();
+									saltoLinea();
+									saltoLinea();
+
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<"Hasta luego "<<endl;
+									saltoLinea();
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.nombreCompleto;
+									//cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.rol;
+									saltoLinea();
+									saltoLinea();
+
+									sleep(2);
+
+									
+									exit(-1);
+
+								}
+								else{
+									miBD.guardarBD();
+									saltoLinea();
+									saltoLinea();
+
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<"Hasta luego "<<endl;
+									saltoLinea();
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.nombreCompleto;
+									//cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.rol;
+									saltoLinea();
+									saltoLinea();
+
+									sleep(2);
+
+									
+									exit(-1);
+								}
+								
+
+
+							}
+							else{
+									saltoLinea();
+									saltoLinea();
+
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<"Hasta luego "<<endl;
+									saltoLinea();
+									cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.nombreCompleto;
+									//cout<<right<<BOLD_ON<<COLOR_LIGTHCYAN<<setw(40)<<cprof.rol;
+									saltoLinea();
+									saltoLinea();
+
+									sleep(2);
+
+									
+									exit(-1);
+							}break;
+				
+						} break;
 						default: {
 							saltoLinea();
 							cout <<"\t"<<"OPCIÓN NO VÁLIDA" << endl;
@@ -1141,7 +1240,7 @@ int main(int argc, char const *argv[]) {
 	}
 	while(intentosAcceso<3);
 
-	//salinda de aplicación 
+	//salida de aplicación 
 	exit(-1);
 	return 0;
 }
@@ -1270,7 +1369,6 @@ void BD::ordenLista(list <Alumno> &lista){
 			limpiarPantalla();
 	
 			if(opcOrden==5){
-
 				break;
 			}
 			*/
@@ -1580,6 +1678,7 @@ void generarhtml(){
 		fprintf(fp, "<li>Tiene <strong>tres</strong> intentos de acceso</li>");
 		fprintf(fp, "<li>La contrase&ntilde;a distingue may&uacute;sculas y min&uacute;sculas</li>");
 		fprintf(fp, "<li>A continuaci&oacute;n le recordamos los usuarios y una pista de la contrase&ntilde;a para acceder a la aplicaci&oacute;n</li><br />");
+		fprintf(fp, "<li>Debe tener una conexi&oacute;n a internet activa para poder realizar los respaldos de las copia de seguridad externa</li><br />");
 	fprintf(fp, "<ul>");
 
 	fprintf(fp, "<table border='1' cellpadding='1' cellspacing='1' style='width:500px;'>");
@@ -1599,15 +1698,15 @@ void generarhtml(){
 			fprintf(fp, "</tr>");
 
 			fprintf(fp, "<tr>");
-				fprintf(fp, "<td>Antonio Dur&aacute;n<</td>");
+				fprintf(fp, "<td>Antonio Dur&aacute;n</td>");
 				fprintf(fp, "<td>aduran</td>");
 				fprintf(fp, "<td>Ayudante</td>");
 				fprintf(fp, "<td>2***</td>");
 			fprintf(fp, "</tr>");
 
 			fprintf(fp, "<tr>");
-				fprintf(fp, "<td>Isabel</td>");
-				fprintf(fp, "<td>isa</td>");
+				fprintf(fp, "<td>Irene Luque</td>");
+				fprintf(fp, "<td>iluque</td>");
 				fprintf(fp, "<td>Coordinador</td>");
 				fprintf(fp, "<td>0***</td>");
 			fprintf(fp, "</tr>");
@@ -1617,16 +1716,13 @@ void generarhtml(){
 	fprintf(fp, "<br />");
 	
 	/*list <Alumno> Auxiliar;
-
 	Auxiliar=b.getAlumnos();
 	
 	fprintf(fp, "<p>A Lista de Alumnos del sistema</p>");
 	list <Alumno>::iterator i;
-
 	for ( i=Auxiliar.begin(); i !=Auxiliar.end(); ++i){
 	
 		fprintf(fp, i->getNombre().c_str());
-
 	}
 	*/
 
@@ -1642,4 +1738,3 @@ void generarhtml(){
 	system("chmod +x abrirWeb.sh");
 	system("./abrirWeb.sh");
 }
-

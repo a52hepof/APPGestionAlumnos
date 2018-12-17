@@ -1,11 +1,6 @@
 #! /bin/bash
 
 #chmod +x guardarExterna.sh
-git init
-git config --global user.name "Fernando Herrera Poch"
-git config --global user.mail a52hepof@uco.es
-
-git remote add origin https://github.com/rca99/Grupo-36-IS.git
 
 git status;
 
@@ -18,8 +13,7 @@ read TXT;
 
 git commit -m "Fecha última copia seguridad: $TXT"
 
-git remote set-url origin https://a52hepof:vn9rn7rz@github.com/rca99/Grupo-36-IS.git
-
+git remote set-url origin https://a52hepof:vn9rn7rz@github.com/a52hepof/APPGestionAlumnos.git
 
 git push -u origin master
 #rm gestionAlumnos.bin

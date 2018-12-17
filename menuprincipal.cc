@@ -733,17 +733,23 @@ int main(int argc, char const *argv[]) {
 						
 							
 							string DNIEliminar;
-							cout<<"\t"<<BOLD_ON<<COLOR_DARKGREY<<"Indique el DNI del alumno que  desea eliminar: ";cout<<COLOR_BRIGHTBLUE<<RESET;cin>>DNIEliminar;getchar();
+							cout<<"\t"<<BOLD_ON<<COLOR_DARKGREY<<"\tIndique el DNI del alumno que  desea eliminar: ";cout<<COLOR_BRIGHTBLUE<<RESET;cin>>DNIEliminar;getchar();
 							//cout<<DNIEliminar;
 							
-							cout<<miBD.getAlumnos().size()<<endl;;
+							cout<<"\tAlumnos antes de la eliminación: "<<COLOR_BRIGHTGREEN<< miBD.getAlumnos().size()<<RESET<<endl;
+							saltoLinea();
 							if (miBD.eliminarAlumno(DNIEliminar)){
 								
-								cout<<"encontrado";
-						
+								cout<<"\tAlumno encontrado y eliminado";
+								saltoLinea();
 								
 							}
-							cout<<miBD.getAlumnos().size()<<endl;
+							else{
+								cout<<"\tAlumno no encontrado";
+
+
+							}
+							cout<<"\tAlumnos después de la eliminación: "<<COLOR_BRIGHTGREEN<< miBD.getAlumnos().size()<<RESET<<endl;
 							saltoLinea();
 							cout<<BOLD_ON<<"PULSE UNA TECLA PARA VOLVER AL MENÚ"<<endl;getchar();
 							
